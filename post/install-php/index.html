@@ -1,0 +1,742 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="php," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="使用php多年，却一直使用brew或apt-get等一键工具安装php。今天记录下自己手动编译php，供初学者参考。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编译安装php">
+<meta property="og:url" content="http://log.codes/post/install-php/index.html">
+<meta property="og:site_name" content="log.codes">
+<meta property="og:description" content="使用php多年，却一直使用brew或apt-get等一键工具安装php。今天记录下自己手动编译php，供初学者参考。">
+<meta property="og:image" content="http://log.codes/image/php-info.png">
+<meta property="og:updated_time" content="2015-12-11T12:45:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="编译安装php">
+<meta name="twitter:description" content="使用php多年，却一直使用brew或apt-get等一键工具安装php。今天记录下自己手动编译php，供初学者参考。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> 编译安装php | log.codes </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">log.codes</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">不积跬步，无以至千里</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                编译安装php
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-25T14:22:41+08:00" content="2015-10-25">
+              2015-10-25
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/post/install-php/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="post/install-php/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>使用php多年，却一直使用<code>brew</code>或<code>apt-get</code>等一键工具安装php。今天记录下自己手动编译php，供初学者参考。</p>
+<a id="more"></a>
+<p>编译过程中如果碰到error或者其他错误提示，需要一步步解决，可Google Baidu之。</p>
+<h2 id="u5B89_u88C5php"><a href="#u5B89_u88C5php" class="headerlink" title="安装php"></a>安装php</h2><p>下载php内核源码（通过git），放置到/server/php/php-src目录下（后文提到的php-src均表示php源码目录）：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">cd /server/php/&#10;git clone git://github.com/php/php-src.git php-src</span><br></pre></td></tr></table></figure>
+<p>php源码包含很多历史版本，目前较为稳定的版本是php5.5，因此将php源码切换到php55版本：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> php-src</span><br><span class="line">git checkout PHP-<span class="number">5.5</span></span><br></pre></td></tr></table></figure>
+<p>编译之前可以使用<code>./configure --help</code>查看有哪些安装配置项，例如：</p>
+<ul>
+<li><code>—prefix</code>：用来配置你想要安装php的根目录（例如/server/php/php55，后文用php55表示php安装后的目录）</li>
+<li><code>--with-config-file-path</code>：用来配置你安装php完毕后用来放置php配置(php.ini)的目录</li>
+</ul>
+<p>编译并安装：</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">./buildconf</span><br><span class="line">.<span class="regexp">/configure --prefix=/</span>server<span class="regexp">/php/</span>php55 --with-config-file-path=<span class="regexp">/server/</span>php<span class="regexp">/php55/</span>etc</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>编译完如果提示一些路径，则表示编译正常。提示示例如下：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">Installing shared extensions:     /server/php/php55/lib/php/extensions/no-debug-non-zts-20121212/&#10;Installing PHP CLI binary:        /server/php/php55/bin/&#10;Installing PHP CLI man page:      /server/php/php55/php/man/man1/&#10;Installing PHP CGI binary:        /server/php/php55/bin/&#10;...</span><br></pre></td></tr></table></figure>
+<p>或者通过执行<code>/server/php/php55/bin/php -v</code>查看版本，也可以验证是否编译安装正常，如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">PHP <span class="number">5.5</span><span class="number">.31</span>-dev (cli) (built: Oct <span class="number">27</span> <span class="number">2015</span> <span class="number">17</span>:<span class="number">11</span>:<span class="number">47</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="u914D_u7F6Ephp-ini"><a href="#u914D_u7F6Ephp-ini" class="headerlink" title="配置php.ini"></a>配置php.ini</h2><p>安装完之后，还得设置php.ini配置。</p>
+<p>将php-src下的php.ini示例（分development开发版本和production线上版本）拷贝到php55目录下</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">cp /server/php/php-src/php.ini-development /server/php/php55/etc/php.ini</span><br></pre></td></tr></table></figure>
+<p>检查配置是否加载进去：</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line"><span class="regexp">/server/</span>php<span class="regexp">/php55/</span>bin<span class="regexp">/php -i | grep ini</span></span><br></pre></td></tr></table></figure>
+<p>如果<code>Loaded Configuration File</code>指向正确的路径，则表示加载配置正常，如下：</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">Configuration <span class="keyword">File</span> (php.ini) Path =&gt; <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>etc</span><br><span class="line">Loaded Configuration <span class="keyword">File</span> =&gt; <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>etc<span class="regexp">/php.ini</span></span><br></pre></td></tr></table></figure>
+<p>php就安装完毕了，试试<code>/server/php/php55/bin/php test.php</code>执行你的php脚本吧。</p>
+<h2 id="u5B89_u88C5php-fpm"><a href="#u5B89_u88C5php-fpm" class="headerlink" title="安装php-fpm"></a>安装php-fpm</h2><p>安装了php，一般我们会将php作为web的开发语言，而不仅仅希望php在服务器上执行脚本。因此我们还需要安装php-fpm。php-fpm官方介绍见<a href="http://php.net/manual/zh/install.fpm.php。" target="_blank" rel="external">http://php.net/manual/zh/install.fpm.php。</a></p>
+<p>前面我们安装php的时候，并没有指定安装php-fpm（配置项是<code>--enable-fpm</code>），因此需要重新编译安装。</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">cd <span class="regexp">/server/</span>php/php-src</span><br><span class="line">.<span class="regexp">/configure -prefix=/</span>server<span class="regexp">/php/</span>php55 --with-config-file-path=<span class="regexp">/server/</span>php<span class="regexp">/php55/</span>etc --enable-fpm</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>安装结束后，会提示PHP FPM相关目录：</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">Installing shared <span class="string">extensions:</span>     <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>lib<span class="regexp">/php/</span>extensions<span class="regexp">/debug-non-zts-20121212/</span></span><br><span class="line">Installing PHP CLI <span class="string">binary:</span>        <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>bin/</span><br><span class="line">Installing PHP CLI man <span class="string">page:</span>      <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>php<span class="regexp">/man/</span>man1/</span><br><span class="line">Installing PHP FPM <span class="string">binary:</span>        <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>sbin/</span><br><span class="line">Installing PHP FPM <span class="string">config:</span>        <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>etc/</span><br><span class="line">Installing PHP FPM man <span class="string">page:</span>      <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>php<span class="regexp">/man/</span>man8/</span><br><span class="line">Installing PHP FPM status <span class="string">page:</span>      <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>php<span class="regexp">/php/</span>fpm/</span><br></pre></td></tr></table></figure>
+<p>想知道php-fpm怎么用？查看man手册即可：</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">man <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>php<span class="regexp">/man/m</span>an8<span class="regexp">/php-fpm.8</span></span><br></pre></td></tr></table></figure>
+<p>从php-src里头拷贝php-fpm一键管理脚本和初始化配置到安装目录下：</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">cd <span class="regexp">/server/</span>php/php55</span><br><span class="line">cp <span class="regexp">/server/</span>php<span class="regexp">/php-src/</span>sapi<span class="regexp">/fpm/</span>init.d.php-fpm <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>etc<span class="regexp">/init.d/</span>php-fpm</span><br><span class="line">cp <span class="regexp">/server/</span>php<span class="regexp">/php-src/</span>sapi<span class="regexp">/fpm/</span>php-fpm.conf <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>etc/</span><br></pre></td></tr></table></figure>
+<p>启动php-fpm之前，可以先配置下php-fpm启动后所要占用的端口号（默认是9000，这里改成9090）。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">; The address on which to accept FastCGI requests.</span><br><span class="line">listen = <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">9090</span></span><br></pre></td></tr></table></figure>
+<p>php-fpm一键管理脚本有如下几个命令：</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">#启动php-fpm</span><br><span class="line"><span class="regexp">/server/</span>php<span class="regexp">/php55/</span>etc<span class="regexp">/init.d/</span>php-fpm start</span><br><span class="line">#关闭php-fpm</span><br><span class="line"><span class="regexp">/server/</span>php<span class="regexp">/php55/</span>etc<span class="regexp">/init.d/</span>php-fpm stop</span><br></pre></td></tr></table></figure>
+<h2 id="u914D_u7F6Efastcgi"><a href="#u914D_u7F6Efastcgi" class="headerlink" title="配置fastcgi"></a>配置fastcgi</h2><p>php-fpm启动后，即可配置php-fpm作为nginx的fastcgi。</p>
+<p>以下是一个简单的nginx server配置，<code>fastcgi_pass</code>配置的端口号必须与前面所配置的端口号一致:</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="title">server</span> &#123;</span><br><span class="line">    <span class="title">listen</span>       <span class="number">80</span>;</span><br><span class="line">    <span class="title">server_name</span>  localhost;</span><br><span class="line">    <span class="title">root</span> /server/www/;</span><br><span class="line">    <span class="title">index</span> index.php index.html;</span><br><span class="line"></span><br><span class="line">    <span class="title">location</span> <span class="regexp">~ \.php$</span> &#123;</span><br><span class="line">        <span class="title">fastcgi_pass</span>   <span class="number">127.0.0.1:9090</span>;</span><br><span class="line">        <span class="title">fastcgi_index</span>  index.php;</span><br><span class="line">        <span class="title">include</span>        fastcgi_params;</span><br><span class="line">        <span class="title">include</span> fcgi.conf;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时我们编写一个index.php首页脚本，放到server root <code>/server/www/</code>下：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="php"><span class="preprocessor">&lt;?php</span></span><br><span class="line">phpInfo();</span></span><br></pre></td></tr></table></figure>
+<p>浏览器访问<a href="http://localhost" target="_blank" rel="external">http://localhost</a> ，如果出现如下页面，证明fastcgi配置正常。<br><img src="/image/php-info.png" alt="php-info界面"></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/php/" rel="tag">#php</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/phpstorm-debug-using-xdebug/" rel="next" title="PhpStorm使用Xdebug断点调试">
+                <i class="fa fa-chevron-left"></i> PhpStorm使用Xdebug断点调试
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/php-extension-first-step/" rel="prev" title="踏出php扩展开发第一步">
+                踏出php扩展开发第一步 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/install-php/"
+           data-title="编译安装php" data-url="http://log.codes/post/install-php/">
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/image/liukanshan.jpg" alt="chasonw" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">chasonw</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">如果你觉得累，说明你没睡够</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/chasonw" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wang-chuan-zheng" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B89_u88C5php"><span class="nav-number">1.</span> <span class="nav-text">安装php</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u914D_u7F6Ephp-ini"><span class="nav-number">2.</span> <span class="nav-text">配置php.ini</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B89_u88C5php-fpm"><span class="nav-number">3.</span> <span class="nav-text">安装php-fpm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u914D_u7F6Efastcgi"><span class="nav-number">4.</span> <span class="nav-text">配置fastcgi</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2015</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chasonw</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"logcodes"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+     
+
+
+    
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>

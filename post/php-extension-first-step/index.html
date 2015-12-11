@@ -1,0 +1,750 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="php-extension," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="在php的世界里也遨游几年了，对于陌生的扩展开发领域一直持远观态度。最近不满足现状，想尝试下扩展开发，看看有没有新鲜的玩法。
+实际上，扩展开发需要先扩充学习很多知识，例如php内核、c语言等等，然而怕的是等学完这些估计热情早已不存。
+所以，暂且先踏出扩展开发第一步，或许能够燃起进一步去探索的热情，然后趁劲学基础知识补缺补漏。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="踏出php扩展开发第一步">
+<meta property="og:url" content="http://log.codes/post/php-extension-first-step/index.html">
+<meta property="og:site_name" content="log.codes">
+<meta property="og:description" content="在php的世界里也遨游几年了，对于陌生的扩展开发领域一直持远观态度。最近不满足现状，想尝试下扩展开发，看看有没有新鲜的玩法。
+实际上，扩展开发需要先扩充学习很多知识，例如php内核、c语言等等，然而怕的是等学完这些估计热情早已不存。
+所以，暂且先踏出扩展开发第一步，或许能够燃起进一步去探索的热情，然后趁劲学基础知识补缺补漏。">
+<meta property="og:updated_time" content="2015-12-11T12:47:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="踏出php扩展开发第一步">
+<meta name="twitter:description" content="在php的世界里也遨游几年了，对于陌生的扩展开发领域一直持远观态度。最近不满足现状，想尝试下扩展开发，看看有没有新鲜的玩法。
+实际上，扩展开发需要先扩充学习很多知识，例如php内核、c语言等等，然而怕的是等学完这些估计热情早已不存。
+所以，暂且先踏出扩展开发第一步，或许能够燃起进一步去探索的热情，然后趁劲学基础知识补缺补漏。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> 踏出php扩展开发第一步 | log.codes </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">log.codes</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">不积跬步，无以至千里</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                踏出php扩展开发第一步
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-10-26T17:35:30+08:00" content="2015-10-26">
+              2015-10-26
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/post/php-extension-first-step/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="post/php-extension-first-step/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>在php的世界里也遨游几年了，对于陌生的扩展开发领域一直持远观态度。最近不满足现状，想尝试下扩展开发，看看有没有新鲜的玩法。</p>
+<p>实际上，扩展开发需要先扩充学习很多知识，例如php内核、c语言等等，然而怕的是等学完这些估计热情早已不存。</p>
+<p>所以，暂且先踏出扩展开发第一步，或许能够燃起进一步去探索的热情，然后趁劲学基础知识补缺补漏。</p>
+<a id="more"></a>
+<hr>
+<h1 id="u7F16_u8BD1_u5B89_u88C5php"><a href="#u7F16_u8BD1_u5B89_u88C5php" class="headerlink" title="编译安装php"></a>编译安装php</h1><p>参见另一篇博文<a href="/post/install-php/">编译安装php</a>。</p>
+<hr>
+<h1 id="u5F00_u53D1_u6269_u5C55"><a href="#u5F00_u53D1_u6269_u5C55" class="headerlink" title="开发扩展"></a>开发扩展</h1><p>熟悉php的同学都知道一个扩展，应该包含一个so扩展文件和一堆配置，so和配置是如何产生的呢？接下来我们一步步来试试。</p>
+<h2 id="ext_skel_u751F_u6210_u9AA8_u67B6"><a href="#ext_skel_u751F_u6210_u9AA8_u67B6" class="headerlink" title="ext_skel生成骨架"></a>ext_skel生成骨架</h2><p>首先找到php扩展目录php-src/ext。这底下有我们熟悉的扩展源码，例如mysql，json，curl等。要编写扩展自然要到这个目录下来。</p>
+<p>php源码附带了ext_skel工具，可以一键生成扩展目录骨架。比如我们要创建名叫myextension的扩展，则执行</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">cd /server/php/php-src/ext&#10;./ext_skel --extname=myextension</span><br></pre></td></tr></table></figure>
+<p>执行ext_skel后，会在php-src/ext目录下出现myextension目录，并且生成了几个文件，可以先不管。</p>
+<p><code>cd myextension</code>目录先。</p>
+<h2 id="u4FEE_u6539config-m4_u914D_u7F6E"><a href="#u4FEE_u6539config-m4_u914D_u7F6E" class="headerlink" title="修改config.m4配置"></a>修改config.m4配置</h2><p>编辑config.m4配置，找到10-12行，去掉<code>dnl</code>注释，如下：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">PHP_ARG_WITH(myextension, for myextension support,&#10;Make sure that the comment is aligned:&#10;[  --with-myextension             Include myextension support])</span><br></pre></td></tr></table></figure>
+<h2 id="u7F16_u5199_u51FD_u6570"><a href="#u7F16_u5199_u51FD_u6570" class="headerlink" title="编写函数"></a>编写函数</h2><p>一个扩展实现N个函数或者类供php程序调用，默认情况下ext_skel会生成一个叫confirm_myextension_compiled的函数。函数的具体实现在myextension.c里，如下（默认只输出一个字符串）：。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Every user-visible function in PHP should document itself in the source */</span></span><br><span class="line"><span class="comment">/* &#123;&#123;&#123; proto string confirm_myextension_compiled(string arg)</span><br><span class="line">   Return a string to confirm that the module is compiled in */</span></span><br><span class="line">PHP_FUNCTION(confirm_myextension_compiled)</span><br><span class="line">&#123;</span><br><span class="line">        <span class="keyword">char</span> *arg = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">int</span> arg_len, len;</span><br><span class="line">        <span class="keyword">char</span> *strg;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, <span class="string">"s"</span>, &amp;arg, &amp;arg_len) == FAILURE) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        len = spprintf(&amp;strg, <span class="number">0</span>, <span class="string">"Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP."</span>, <span class="string">"myextension"</span>, arg);</span><br><span class="line">        RETURN_STRINGL(strg, len, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>函数名可以自定义，记得同时在myextension.c和myextension.h里搜索关键字，一块更改。</p>
+<h2 id="u7F16_u8BD1_u6269_u5C55"><a href="#u7F16_u8BD1_u6269_u5C55" class="headerlink" title="编译扩展"></a>编译扩展</h2><p>编写扩展函数代码实现后，就可以进行扩展编译。如下步骤：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">cd /server/php/php-src/ext/myextension&#10;/server/php/php55/bin/phpize&#10;./configure --with-php-config=/server/php/php55/bin/php-config&#10;make&#10;make install</span><br></pre></td></tr></table></figure>
+<p><code>make install</code>后会自动将myextension.so拷贝到php55目录下的扩展目录，至此so文件如何产生你应该有了第一印象。</p>
+<h2 id="u8C03_u7528_u6269_u5C55_u51FD_u6570"><a href="#u8C03_u7528_u6269_u5C55_u51FD_u6570" class="headerlink" title="调用扩展函数"></a>调用扩展函数</h2><p>扩展install进去了，那我们可以试试调用之前说的默认函数了：</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line"><span class="regexp">/server/</span>php<span class="regexp">/php55/</span>bin/php -r <span class="string">"echo(confirm_myextension_compiled('aaa'));"</span></span><br></pre></td></tr></table></figure>
+<p>是不是报了fatal错误呢？</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">PHP Fatal error:  Call to undefined function <span class="function"><span class="title">confirm_myextension_compiled</span><span class="params">()</span></span> <span class="keyword">in</span> Command line <span class="tag">code</span> on line <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>正常，因为目前只有so文件放置到扩展目录下，还需要配置加载。在我们前面配的php.ini最后加上：</p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="title">[myextension]</span></span><br><span class="line"><span class="setting">extension=<span class="value">myextension.so</span></span></span><br></pre></td></tr></table></figure>
+<p>再调用下函数看看，是不是输出了</p>
+<figure class="highlight oxygene"><table><tr><td class="code"><pre><span class="line">Congratulations! You have successfully modified ext/myextension/config.m4. <span class="keyword">Module</span> aaa <span class="keyword">is</span> now compiled <span class="keyword">into</span> PHP.</span><br></pre></td></tr></table></figure>
+<p>这样，一个简单的扩展开发demo就演示完毕了。</p>
+<hr>
+<h1 id="gdb_u8C03_u8BD5_u6269_u5C55"><a href="#gdb_u8C03_u8BD5_u6269_u5C55" class="headerlink" title="gdb调试扩展"></a>gdb调试扩展</h1><p>c开发调试经常用到gdb，php扩展同样适合gdb调试。</p>
+<h2 id="u91CD_u7F16php"><a href="#u91CD_u7F16php" class="headerlink" title="重编php"></a>重编php</h2><p>需要重新以<code>--enable-debug</code>模式编译php，如下步骤：</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">cd <span class="regexp">/server/</span>php/php-src</span><br><span class="line">.<span class="regexp">/configure --prefix=/</span>server<span class="regexp">/php/</span>php55 --with-config-file-path=<span class="regexp">/server/</span>php<span class="regexp">/php55/</span>etc --enable-debug</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>编译完后php扩展目录会变成，与之前的<code>no-debug-non-zts-20121212</code>路径不一致：</p>
+<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="constant">Installing</span> shared <span class="symbol">extensions:</span>     /server/php/php55/<span class="class"><span class="keyword">lib</span>/<span class="title">php</span>/<span class="title">extensions</span>/<span class="title">debug</span>-<span class="title">non</span>-<span class="title">zts</span>-20121212/</span></span><br></pre></td></tr></table></figure>
+<h2 id="u91CD_u7F16_u6269_u5C55"><a href="#u91CD_u7F16_u6269_u5C55" class="headerlink" title="重编扩展"></a>重编扩展</h2><p>接着修改php-src/ext/myextension/config.m4，在最后添加上：</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="title">if</span> test -z <span class="string">"<span class="variable">$PHP_DEBUG</span>"</span>; <span class="title">then</span></span><br><span class="line">        AC_ARG_ENABLE(<span class="built_in">debug</span>,</span><br><span class="line">                [--enable-<span class="built_in">debug</span>  compile with debugging system],</span><br><span class="line">                [PHP_DEBUG=<span class="variable">$enableval</span>], [PHP_DEBUG=<span class="built_in">no</span>]</span><br><span class="line">        )</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>然后重新以–enable-debug编译扩展：</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">cd <span class="regexp">/server/</span>php<span class="regexp">/php-src/</span>ext/myextension</span><br><span class="line"><span class="regexp">/server/</span>php<span class="regexp">/php55/</span>bin/phpize</span><br><span class="line">.<span class="regexp">/configure --with-php-config=/</span>server<span class="regexp">/php/</span>php55<span class="regexp">/bin/</span>php-config --enable-debug</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<h2 id="u8C03_u8BD5"><a href="#u8C03_u8BD5" class="headerlink" title="调试"></a>调试</h2><p>我们可以通过php调用扩展函数来调试内部c实现，例如test.php</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#60;?php&#10;echo confirm_myextension_compiled(&#34;hello&#34;);</span><br></pre></td></tr></table></figure>
+<p>开启gdb（mac下需要sudo，否则会提示<code>Unable to find Mach task port for process-id 12344: (os/kern) failure (0x5).</code>，不知道什么玩意）：</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">sudo gdb <span class="regexp">/server/</span>php<span class="regexp">/php55/</span>bin<span class="regexp">/php</span></span><br></pre></td></tr></table></figure>
+<p><code>PHP_FUNCTION</code>宏会将定义的扩展函数名<code>confirm_myextension_compiled</code>前面添加zif_前缀（zif是zend internal function的意思），变更为c函数zif_confirm_myextension_compiled。所以gdb调试试应该通过zif_confirm_myextension_compiled设置断点。</p>
+<p>gdb调试示例如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#设置断点(提示未定义过的话，仍然设置)</span></span><br><span class="line">(gdb) <span class="keyword">break</span> zif_confirm_myextension_compiled</span><br><span class="line">Function <span class="string">"zif_confirm_myextension_compiled"</span> not defined.</span><br><span class="line">Make breakpoint pending on future shared library load? (y or [n]) y</span><br><span class="line">Breakpoint <span class="number">1</span> (zif_confirm_myextension_compiled) pending.</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#运行test.php脚本，到断点处会暂停</span></span><br><span class="line">(gdb) run test.php</span><br><span class="line">Starting program: /server/php/php55/bin/php test.php</span><br><span class="line"></span><br><span class="line">Breakpoint <span class="number">1</span>, zif_confirm_myextension_compiled (ht=<span class="number">1</span>, return_value=<span class="number">0x1009e03d8</span>, return_value_ptr=<span class="number">0x0</span>, this_ptr=<span class="number">0x0</span>, return_value_used=<span class="number">1</span>) at myextension.c:<span class="number">156</span></span><br><span class="line"><span class="number">156</span>		<span class="keyword">char</span> *arg = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#执行下一行</span></span><br><span class="line">(gdb) next</span><br><span class="line"><span class="number">160</span>		<span class="keyword">if</span> (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, <span class="string">"s"</span>, &amp;arg, &amp;arg_len) == FAILURE) &#123;</span><br><span class="line">(gdb) next</span><br><span class="line"><span class="number">164</span>		len = spprintf(&amp;strg, <span class="number">0</span>, <span class="string">"hello Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP."</span>, <span class="string">"myextension"</span>, arg);</span><br><span class="line">(gdb) next</span><br><span class="line"><span class="number">165</span>		RETURN_STRINGL(strg, len, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#打印strg字符串变量</span></span><br><span class="line">(gdb) <span class="built_in">printf</span> <span class="string">"%s\n"</span>,&amp;strg</span><br><span class="line">hello Congratulations! You have successfully modified ext/myextension/config.m4. Module hello is now compiled into PHP.</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#打印len变量</span></span><br><span class="line">(gdb) print len</span><br><span class="line">$<span class="number">7</span> = <span class="number">119</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#继续执行直到完毕</span></span><br><span class="line">(gdb) <span class="keyword">continue</span></span><br><span class="line">Continuing.</span><br><span class="line">hello Congratulations! You have successfully modified ext/myextension/config.m4. Module hello is now compiled into PHP.warning: Temporarily disabling breakpoints <span class="keyword">for</span> unloaded shared library <span class="string">"/server/php/php55/lib/php/extensions/no-debug-non-zts-20121212/myextension.so"</span></span><br><span class="line">[Inferior <span class="number">1</span> (process <span class="number">11984</span>) exited normally]</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#退出gdb</span></span><br><span class="line">(gdb) quit</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="u53C2_u8003"><a href="#u53C2_u8003" class="headerlink" title="参考"></a>参考</h1><p><a href="http://my.oschina.net/jungleliu0923/blog/198935" target="_blank" rel="external">http://my.oschina.net/jungleliu0923/blog/198935</a></p>
+<p><a href="http://www.walu.cc/phpbook/preface.md" target="_blank" rel="external">http://www.walu.cc/phpbook/preface.md</a></p>
+<p><a href="http://www.codefrom.com/paper/%E4%BD%BF%E7%94%A8gdb%E8%B0%83%E8%AF%95php%E6%89%A9%E5%B1%95" target="_blank" rel="external">http://www.codefrom.com/paper/%E4%BD%BF%E7%94%A8gdb%E8%B0%83%E8%AF%95php%E6%89%A9%E5%B1%95</a></p>
+<p><a href="http://www.cmlab.csie.ntu.edu.tw/~daniel/linux/gdb.html" target="_blank" rel="external">http://www.cmlab.csie.ntu.edu.tw/~daniel/linux/gdb.html</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/php-extension/" rel="tag">#php-extension</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/install-php/" rel="next" title="编译安装php">
+                <i class="fa fa-chevron-left"></i> 编译安装php
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/php-extension-first-step/"
+           data-title="踏出php扩展开发第一步" data-url="http://log.codes/post/php-extension-first-step/">
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/image/liukanshan.jpg" alt="chasonw" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">chasonw</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">如果你觉得累，说明你没睡够</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/chasonw" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wang-chuan-zheng" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#u7F16_u8BD1_u5B89_u88C5php"><span class="nav-number">1.</span> <span class="nav-text">编译安装php</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u5F00_u53D1_u6269_u5C55"><span class="nav-number">2.</span> <span class="nav-text">开发扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ext_skel_u751F_u6210_u9AA8_u67B6"><span class="nav-number">2.1.</span> <span class="nav-text">ext_skel生成骨架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4FEE_u6539config-m4_u914D_u7F6E"><span class="nav-number">2.2.</span> <span class="nav-text">修改config.m4配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7F16_u5199_u51FD_u6570"><span class="nav-number">2.3.</span> <span class="nav-text">编写函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7F16_u8BD1_u6269_u5C55"><span class="nav-number">2.4.</span> <span class="nav-text">编译扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8C03_u7528_u6269_u5C55_u51FD_u6570"><span class="nav-number">2.5.</span> <span class="nav-text">调用扩展函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gdb_u8C03_u8BD5_u6269_u5C55"><span class="nav-number">3.</span> <span class="nav-text">gdb调试扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u91CD_u7F16php"><span class="nav-number">3.1.</span> <span class="nav-text">重编php</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u91CD_u7F16_u6269_u5C55"><span class="nav-number">3.2.</span> <span class="nav-text">重编扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8C03_u8BD5"><span class="nav-number">3.3.</span> <span class="nav-text">调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u53C2_u8003"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2015</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chasonw</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"logcodes"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+     
+
+
+    
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>

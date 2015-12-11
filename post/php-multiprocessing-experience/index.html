@@ -1,0 +1,731 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="linux,php," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="最近尝试了PHP多进程编程，享受了一把多进程提高处理能力的好处，同时也发现多进程难维护的一面。多进程的一个难点在于fork之后，你要管的不只是一个爹，还得管他复制出来的多个熊孩子。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHP多进程编程初体验">
+<meta property="og:url" content="http://log.codes/post/php-multiprocessing-experience/index.html">
+<meta property="og:site_name" content="log.codes">
+<meta property="og:description" content="最近尝试了PHP多进程编程，享受了一把多进程提高处理能力的好处，同时也发现多进程难维护的一面。多进程的一个难点在于fork之后，你要管的不只是一个爹，还得管他复制出来的多个熊孩子。">
+<meta property="og:updated_time" content="2015-10-20T08:09:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PHP多进程编程初体验">
+<meta name="twitter:description" content="最近尝试了PHP多进程编程，享受了一把多进程提高处理能力的好处，同时也发现多进程难维护的一面。多进程的一个难点在于fork之后，你要管的不只是一个爹，还得管他复制出来的多个熊孩子。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> PHP多进程编程初体验 | log.codes </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">log.codes</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">不积跬步，无以至千里</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                PHP多进程编程初体验
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-02-03T20:46:19+08:00" content="2015-02-03">
+              2015-02-03
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/post/php-multiprocessing-experience/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="post/php-multiprocessing-experience/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>最近尝试了PHP多进程编程，享受了一把多进程提高处理能力的好处，同时也发现多进程难维护的一面。多进程的一个难点在于fork之后，你要管的不只是一个爹，还得管他复制出来的多个熊孩子。</p>
+<a id="more"></a>
+<p>##背景<br>为了提高业务脚本产出效率，使用了一个父进程控制产生多个子进程运行业务逻辑，并且子进程的数量要保持在一定数量。<br>为了子进程不至于产生内存泄露等风险，子进程完成自己的任务后立即结束。<br>一番调研之后果断使用<a href="http://php.net/manual/zh/book.pcntl.php" target="_blank" rel="external">pcntl</a>扩展做进程控制。  </p>
+<p>##天真的实现<br>简单构思之后，咔咔实现了第一版本代码。逻辑大概是这样的：  </p>
+<ol>
+<li>使用变量<code>$current</code>记录当前子进程数量</li>
+<li>父进程不断fork出子进程，<code>$current</code>不断递增，直到用满了配额（max=10）则阻塞等待</li>
+<li>子进程结束时，父进程会捕获到SIGCHLD信号，对<code>$current</code>做-1操作。</li>
+<li>父进程从<code>pcntl_wait()</code>阻塞状态恢复，继续创建新子进程。</li>
+</ol>
+<p>代码如下：<br><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"><span class="variable">$max</span> = <span class="number">10</span>;       //最大的子进程数量</span><br><span class="line"><span class="variable">$current</span> = <span class="number">0</span>;    //当前的子进程数量</span><br><span class="line"></span><br><span class="line">//子进程退出时回调</span><br><span class="line">pcntl_signal(SIGCHLD, <span class="keyword">function</span>(<span class="variable">$signal</span>)&#123;</span><br><span class="line">    global <span class="variable">$current</span>;</span><br><span class="line">    <span class="variable">$current--</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line"></span><br><span class="line">    //超过数量则阻塞等待子进程结束</span><br><span class="line">    if (<span class="variable">$current</span> &gt;= <span class="variable">$max</span>) &#123;</span><br><span class="line">        <span class="variable">$childPid</span> = pcntl_wait(<span class="variable">$status</span>);</span><br><span class="line">        continue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //创建子进程</span><br><span class="line">    <span class="variable">$pid</span> = pcntl_fork();</span><br><span class="line">    if (<span class="variable">$pid</span> == -<span class="number">1</span>) &#123;</span><br><span class="line">        //这里是父进程，创建子进程失败</span><br><span class="line">        echo <span class="string">"\npcntl_fork failed "</span>;</span><br><span class="line">    &#125; elseif (<span class="variable">$pid</span>) &#123;</span><br><span class="line">        //这里是父进程</span><br><span class="line">        <span class="variable">$current</span>++;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        //这里是子进程，运行子进程业务</span><br><span class="line">        include <span class="string">'xxx.php'</span>;</span><br><span class="line">        exit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>逻辑清晰，看起来简单可依赖。通过<code>ps aux</code>测试之后也符合需求，一直保持着10个子进程。</p>
+<p>##问题暴露<br>部署之后，运行一段时间却意外发现子进程数量保持在一两个，不符合10个子进程预期。虽然业务照常运行，但处理速度比预期慢！</p>
+<p>##定位问题<br>不科学！线下运行，排除业务因素干扰采用使用<code>sleep(5)</code>代替。幸好能稳定复现，并且<code>sleep</code>取代之后，问题立即复现。<br><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="title">ps</span> aux | grep pcntl | grep -v grep | awk <span class="string">'&#123;print <span class="variable">$1</span>,<span class="variable">$2</span>,<span class="variable">$NF</span>&#125;'</span></span><br><span class="line">work <span class="number">9102</span> pcntl_demo.php    <span class="comment">#父进程</span></span><br><span class="line">work <span class="number">9109</span> pcntl_demo.php    <span class="comment">#子进程1</span></span><br><span class="line">work <span class="number">10537</span> pcntl_demo.php   <span class="comment">#子进程2</span></span><br></pre></td></tr></table></figure></p>
+<p>为了定位问题所在，分别在<code>pcntl_signal()</code>里、<code>pcntl_wait()</code>后、<code>pcntl_fork()</code>前后<code>echo</code>相关变量。 </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">fork current=<span class="number">1</span></span><br><span class="line">fork current=<span class="number">2</span></span><br><span class="line">fork current=<span class="number">3</span></span><br><span class="line">fork current=<span class="number">4</span></span><br><span class="line">fork current=<span class="number">5</span></span><br><span class="line">fork current=<span class="number">6</span></span><br><span class="line">fork current=<span class="number">7</span></span><br><span class="line">fork current=<span class="number">8</span></span><br><span class="line">fork current=<span class="number">9</span></span><br><span class="line">fork current=<span class="number">10</span></span><br><span class="line">                                                                 waitCount=<span class="number">1</span>   <span class="preprocessor">#阻塞恢复</span></span><br><span class="line">                      signalCount=<span class="number">1</span> current=<span class="number">9</span>                                  <span class="preprocessor">#信号回调</span></span><br><span class="line">fork current=<span class="number">10</span></span><br><span class="line">                                                                 waitCount=<span class="number">2</span>   <span class="preprocessor">#阻塞恢复</span></span><br><span class="line">                      signalCount=<span class="number">2</span> current=<span class="number">9</span>                                  <span class="preprocessor">#信号回调</span></span><br><span class="line">fork current=<span class="number">10</span></span><br><span class="line">                                                                 waitCount=<span class="number">3</span>   <span class="preprocessor">#阻塞恢复</span></span><br><span class="line">                      signalCount=<span class="number">3</span> current=<span class="number">9</span>                                  <span class="preprocessor">#信号回调</span></span><br><span class="line">fork current=<span class="number">10</span></span><br><span class="line">                                                                 waitCount=<span class="number">4</span>   <span class="preprocessor">#阻塞恢复（缺少信号）</span></span><br><span class="line">                                                                 waitCount=<span class="number">5</span>   <span class="preprocessor">#阻塞恢复（缺少信号）</span></span><br><span class="line">                                                                 waitCount=<span class="number">6</span>   <span class="preprocessor">#阻塞恢复（缺少信号）</span></span><br><span class="line">                                                                 waitCount=<span class="number">7</span>   <span class="preprocessor">#阻塞恢复（缺少信号）</span></span><br><span class="line">                                                                 waitCount=<span class="number">8</span>   <span class="preprocessor">#阻塞恢复（缺少信号）</span></span><br><span class="line">                                                                 waitCount=<span class="number">9</span>   <span class="preprocessor">#阻塞恢复（缺少信号）</span></span><br><span class="line">                                                                 waitCount=<span class="number">10</span>  <span class="preprocessor">#阻塞恢复（缺少信号）</span></span><br><span class="line">                                                                 waitCount=<span class="number">11</span>  <span class="preprocessor">#阻塞恢复</span></span><br><span class="line">                      signalCount=<span class="number">4</span> current=<span class="number">9</span>                                  <span class="preprocessor">#信号回调</span></span><br><span class="line">fork current=<span class="number">10</span></span><br><span class="line">                                                                 waitCount=<span class="number">12</span></span><br><span class="line">                      signalCount=<span class="number">5</span> current=<span class="number">9</span></span><br><span class="line">fork current=<span class="number">10</span></span><br><span class="line">                                                                 waitCount=<span class="number">13</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>通过输出可以定位到SIGCHLD的信号回调次数比pcntl_wait阻塞恢复次数少得多。<br>中间有几次从<code>wait</code>阻塞恢复过来，但是并没有接受到相应的信号，<br>导致<code>$current</code>没有在子进程结束时相应<code>-1</code>，占用了一定的名额（相当于父进程不知道子进程结束了）。<br>难怪到最后会剩下一两个子进程在自己在玩。</p>
+<p>定位到问题所在：<strong>信号丢失！</strong></p>
+<p>##验证问题<br>信号确定会丢失？需要验证下。<br><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">&lt;?php</span></span><br><span class="line"></span><br><span class="line">pcntl_signal(SIGCHLD, <span class="function"><span class="keyword">function</span><span class="params">(<span class="variable">$signal</span>)</span></span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"\nsignal is caught"</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建10个子进程</span></span><br><span class="line"><span class="variable">$n</span> = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">while</span>(<span class="variable">$n</span>--) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="variable">$pid</span> = pcntl_fork();</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$pid</span> == -<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"\npcntl_fork failed "</span>;</span><br><span class="line">    &#125; <span class="keyword">elseif</span> (<span class="variable">$pid</span>) &#123;</span><br><span class="line">        <span class="comment">//这里是父进程的逻辑</span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"\nchild-&#123;$pid&#125; is forked"</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//这里是子进程的逻辑</span></span><br><span class="line">        sleep(<span class="number">5</span>);</span><br><span class="line">        posix_kill(posix_getpid(), SIGTERM);</span><br><span class="line">        <span class="keyword">exit</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//父进程</span></span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">exit</span>;</span><br></pre></td></tr></table></figure><br>执行之后输出</p>
+<figure class="highlight vhdl"><table><tr><td class="code"><pre><span class="line">child-<span class="number">21792</span> <span class="keyword">is</span> forked</span><br><span class="line">child-<span class="number">21793</span> <span class="keyword">is</span> forked</span><br><span class="line">child-<span class="number">21794</span> <span class="keyword">is</span> forked</span><br><span class="line">child-<span class="number">21795</span> <span class="keyword">is</span> forked</span><br><span class="line">child-<span class="number">21796</span> <span class="keyword">is</span> forked</span><br><span class="line">child-<span class="number">21797</span> <span class="keyword">is</span> forked</span><br><span class="line">child-<span class="number">21798</span> <span class="keyword">is</span> forked</span><br><span class="line">child-<span class="number">21799</span> <span class="keyword">is</span> forked</span><br><span class="line">child-<span class="number">21800</span> <span class="keyword">is</span> forked</span><br><span class="line">child-<span class="number">21801</span> <span class="keyword">is</span> forked</span><br><span class="line"><span class="keyword">signal</span> <span class="keyword">is</span> caught</span><br><span class="line"><span class="keyword">signal</span> <span class="keyword">is</span> caught</span><br></pre></td></tr></table></figure>
+<p>每次执行，都会得到不同的结果，但信号少于10次却能稳定复现。因此可以确定信号的确会丢失。<br>我们再把子进程的运行时间分散开来，而不是保持一致，<code>sleep(5)</code>改成<code>sleep(rand(0, 10))</code>。运行之后，信号不再丢失。</p>
+<p>可以得出结论：信号丢失发生在信号集中的case，如果信号分散开来则一切正常。<br>这也就能解释为什么测试的时候未能发现问题，而是等部署之后运行一段时间才暴露问题。<br>真实的业务子进程每次执行时间不一致，偶尔一致的时候，会导致信号集中发生丢失。</p>
+<p>##丢失原因<br>为什么信号集中的时候会发生丢失？一番网上搜索之后，有了答案。</p>
+<blockquote><p>Linux信号机制基本上是从Unix系统中继承过来的。早期Unix系统中的信号机制比较简单和原始，后来在实践中暴露出一些问题，因此，把那些建立在早期机制上的信号叫做”不可靠信号”，信号值小于SIGRTMIN(Red hat 7.2中，SIGRTMIN=32，SIGRTMAX=63)的信号都是不可靠信号。这就是”不可靠信号”的来源。它的主要问题是：<br>1.进程每次处理信号后，就将对信号的响应设置为默认动作。在某些情况下，将导致对信号的错误处理；因此，用户如果不希望这样的操作，那么就要在信号处理函数结尾再一次调用signal()，重新安装该信号。<br>2.信号可能丢失，后面将对此详细阐述。<br>因此，早期unix下的不可靠信号主要指的是进程可能对信号做出错误的反应以及信号可能丢失。<br>Linux支持不可靠信号，但是对不可靠信号机制做了改进：在调用完信号处理函数后，不必重新调用该信号的安装函数（信号安装函数是在可靠机制上的实现）。因此，Linux下的不可靠信号问题主要指的是信号可能丢失。</p>
+<footer><strong>郑彦兴</strong><cite><a href="http://www.ibm.com/developerworks/cn/linux/l-ipc/part2/index1.html" target="_blank" rel="external">Linux环境进程间通信（二）: 信号（上）</a></cite></footer></blockquote>
+<blockquote><p>当一个非实时信号发送给一个进程时，如果该信号已经在进程中注册，则该信号将被丢弃，造成信号丢失。因此，非实时信号又叫做”不可靠信号”。这意味着同一个非实时信号在进程的未决信号信息链中，至多占有一个sigqueue结构。<br>一个非实时信号诞生后，<br>（1）如果发现相同的信号已经在目标结构中注册，则不再注册，对于进程来说，相当于不知道本次信号发生，信号丢失；<br>（2）如果进程的未决信号中没有相同信号，则在进程中注册自己）。</p>
+<footer><strong>郑彦兴</strong><cite><a href="http://www.ibm.com/developerworks/cn/linux/l-ipc/part2/index2.html" target="_blank" rel="external">Linux环境进程间通信（二）: 信号（下）</a></cite></footer></blockquote>
+<p>还有一篇从kernel源码分析的补充解释同样值得一读：<br><a href="http://linux.chinaunix.net/techdoc/system/2006/06/04/933746.shtml" target="_blank" rel="external">http://linux.chinaunix.net/techdoc/system/2006/06/04/933746.shtml</a></p>
+<p>##改进方案<br>依靠<code>pcntl_wait()</code>捕获子进程结束的消息。先用demo验证下pcntl_wait是否可靠。<br><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">//创建<span class="number">10</span>个子进程</span><br><span class="line"><span class="variable">$n</span> = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">while</span>(<span class="variable">$n--</span>) &#123;</span><br><span class="line">    <span class="variable">$pid</span> = pcntl_fork();</span><br><span class="line">    if (<span class="variable">$pid</span> == -<span class="number">1</span>) &#123;</span><br><span class="line">        echo <span class="string">"\npcntl_fork failed "</span>;</span><br><span class="line">    &#125; elseif (<span class="variable">$pid</span>) &#123;</span><br><span class="line">        //这里是父进程的逻辑</span><br><span class="line">        echo <span class="string">"\nchild-&#123;$pid&#125; is forked"</span>;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        //这里是子进程的逻辑</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">        posix_kill(posix_getpid(), SIGTERM);</span><br><span class="line">        exit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//父进程</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line">    <span class="variable">$childPid</span> = pcntl_wait(<span class="variable">$status</span>);</span><br><span class="line">    echo <span class="string">"\npcntl_wait : pid=&#123;$childPid&#125; status=&#123;$status&#125;"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>执行之后：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">child-<span class="number">12132</span> is forked</span><br><span class="line">child-<span class="number">12133</span> is forked</span><br><span class="line">child-<span class="number">12134</span> is forked</span><br><span class="line">child-<span class="number">12135</span> is forked</span><br><span class="line">child-<span class="number">12136</span> is forked</span><br><span class="line">child-<span class="number">12137</span> is forked</span><br><span class="line">child-<span class="number">12138</span> is forked</span><br><span class="line">child-<span class="number">12139</span> is forked</span><br><span class="line">child-<span class="number">12140</span> is forked</span><br><span class="line">child-<span class="number">12141</span> is forked</span><br><span class="line">pcntl_wait : pid=<span class="number">12132</span> status=<span class="number">15</span></span><br><span class="line">pcntl_wait : pid=<span class="number">12133</span> status=<span class="number">15</span></span><br><span class="line">pcntl_wait : pid=<span class="number">12134</span> status=<span class="number">15</span></span><br><span class="line">pcntl_wait : pid=<span class="number">12135</span> status=<span class="number">15</span></span><br><span class="line">pcntl_wait : pid=<span class="number">12136</span> status=<span class="number">15</span></span><br><span class="line">pcntl_wait : pid=<span class="number">12137</span> status=<span class="number">15</span></span><br><span class="line">pcntl_wait : pid=<span class="number">12138</span> status=<span class="number">15</span></span><br><span class="line">pcntl_wait : pid=<span class="number">12139</span> status=<span class="number">15</span></span><br><span class="line">pcntl_wait : pid=<span class="number">12140</span> status=<span class="number">15</span></span><br><span class="line">pcntl_wait : pid=<span class="number">12141</span> status=<span class="number">15</span></span><br><span class="line">pcntl_wait : pid=-<span class="number">1</span> status=<span class="number">0</span></span><br></pre></td></tr></table></figure></p>
+<p>证明每次子进程退出，pcntl_wait()都能返回，不管子进程是在pcntl_wait()之前还是之后结束。</p>
+<p>天真的第一版改完之后就变成：<br><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"><span class="variable">$max</span> = <span class="number">10</span>;       //最大的子进程数量</span><br><span class="line"><span class="variable">$current</span> = <span class="number">0</span>;    //当前的子进程数量</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">    //超过数量则阻塞等待子进程结束</span><br><span class="line">    if (<span class="variable">$current</span> &gt;= <span class="variable">$max</span>) &#123;</span><br><span class="line">        <span class="variable">$childPid</span> = pcntl_wait(<span class="variable">$status</span>);</span><br><span class="line">        if (<span class="variable">$childPid</span> &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            exit();</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        if (<span class="variable">$status</span> == SIGTERM) &#123;</span><br><span class="line">            <span class="variable">$current--</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    //创建子进程</span><br><span class="line">    <span class="variable">$pid</span> = pcntl_fork();</span><br><span class="line">    if (<span class="variable">$pid</span> == -<span class="number">1</span>) &#123;</span><br><span class="line">        //这里是父进程，创建子进程失败</span><br><span class="line">        echo <span class="string">"\npcntl_fork failed "</span>;</span><br><span class="line">    &#125; elseif (<span class="variable">$pid</span>) &#123;</span><br><span class="line">        //这里是父进程</span><br><span class="line">        <span class="variable">$current</span>++;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        //这里是子进程，运行子进程业务</span><br><span class="line">        sleep(<span class="number">3</span>);</span><br><span class="line">        posix_kill(posix_getpid(), SIGTERM);</span><br><span class="line">        exit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行之后，就符合期望了，保持10个子进程持续运行。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag">#linux</a>
+          
+            <a href="/tags/php/" rel="tag">#php</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/shell-memo/" rel="next" title="shell命令备忘录">
+                <i class="fa fa-chevron-left"></i> shell命令备忘录
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/ssh-connection-reuse-and-automatic-login/" rel="prev" title="ssh连接复用与自动登陆">
+                ssh连接复用与自动登陆 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/php-multiprocessing-experience/"
+           data-title="PHP多进程编程初体验" data-url="http://log.codes/post/php-multiprocessing-experience/">
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/image/liukanshan.jpg" alt="chasonw" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">chasonw</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">如果你觉得累，说明你没睡够</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/chasonw" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/wang-chuan-zheng" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> zhihu
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2015</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chasonw</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"logcodes"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+     
+
+
+    
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>
