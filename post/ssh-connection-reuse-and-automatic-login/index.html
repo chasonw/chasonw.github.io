@@ -57,7 +57,7 @@
 <meta property="og:url" content="http://log.codes/post/ssh-connection-reuse-and-automatic-login/index.html">
 <meta property="og:site_name" content="log.codes">
 <meta property="og:description" content="工作中经常需要登陆远程主机，每次ssh都需要输入密码，甚至有些公司的登陆密码不是固定的，而是令牌动态密码。同时安全考虑，有些公司会要求先登陆一台relay堡垒机，再登陆远程主机。这样一来，每一次登陆，都需要动态输入密码，并且做两次登陆，是否有简单可行的办法呢？">
-<meta property="og:updated_time" content="2015-10-20T08:52:40.000Z">
+<meta property="og:updated_time" content="2015-12-25T10:37:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ssh连接复用与自动登陆">
 <meta name="twitter:description" content="工作中经常需要登陆远程主机，每次ssh都需要输入密码，甚至有些公司的登陆密码不是固定的，而是令牌动态密码。同时安全考虑，有些公司会要求先登陆一台relay堡垒机，再登陆远程主机。这样一来，每一次登陆，都需要动态输入密码，并且做两次登陆，是否有简单可行的办法呢？">
@@ -244,17 +244,17 @@
       
         <span itemprop="articleBody"><p>工作中经常需要登陆远程主机，每次ssh都需要输入密码，甚至有些公司的登陆密码不是固定的，而是令牌动态密码。<br>同时安全考虑，有些公司会要求先登陆一台relay堡垒机，再登陆远程主机。<br>这样一来，每一次登陆，都需要动态输入密码，并且做两次登陆，是否有简单可行的办法呢？</p>
 <a id="more"></a>
-<p>#ssh连接复用<br>利用连接复用功能，就可以达到只输入一次密码，多次登陆的目的。</p>
+<h1 id="ssh_u8FDE_u63A5_u590D_u7528"><a href="#ssh_u8FDE_u63A5_u590D_u7528" class="headerlink" title="ssh连接复用"></a>ssh连接复用</h1><p>利用连接复用功能，就可以达到只输入一次密码，多次登陆的目的。</p>
 <p>原理很简单，ssh第一次连接远程机器时，会将连接的socket文件记录下来，下一次连接同样主机时直接复用这一次的连接，因此，用户身份认证（密码验证）也同时省去了。</p>
 <p>这个功能默认是关闭的，如何开启这个功能呢？<br>只需要在<code>~/.ssh/config</code>添加配置即可：<br><figure class="highlight mel"><table><tr><td class="code"><pre><span class="line">Host *</span><br><span class="line">ControlMaster auto</span><br><span class="line">ControlPath ~/.ssh/master-<span class="variable">%r</span><span class="variable">@%</span>h:<span class="variable">%p</span></span><br></pre></td></tr></table></figure></p>
 <p>上述配置中<code>ControlPath</code>是ssh远程主机后产生的socket文件路径，<code>%r</code>表示用户名，<code>%h</code>表示主机地址，<code>%p</code>表示端口号。</p>
 <p>例如我<code>ssh root@log.codes</code>后会产生<code>~/.ssh/master-root@log.codes:22</code>文件。第一次ssh输入密码登陆后产生socket文件，第二次ssh同样主机就不再提示密码直接登陆主机，就算是动态密码也如此。</p>
 <p>值得注意的是，当主连接（产生socket文件的连接）断开后，后面的连接也都将断开，提示：Shared connection to log.codes closed.</p>
 <p>该功能同样适用于relay堡垒机登陆。</p>
-<p>#一键登陆脚本<br>登陆远程主机，需要记主机名，记密码，登陆中转机，这些事情都可以交给一键脚本来做。<br>如果你所在的环境是使用堡垒机+动态密码登陆远程主机，可以考虑使用expect脚本。（脚本参考公司内部）</p>
+<h1 id="u4E00_u952E_u767B_u9646_u811A_u672C"><a href="#u4E00_u952E_u767B_u9646_u811A_u672C" class="headerlink" title="一键登陆脚本"></a>一键登陆脚本</h1><p>登陆远程主机，需要记主机名，记密码，登陆中转机，这些事情都可以交给一键脚本来做。<br>如果你所在的环境是使用堡垒机+动态密码登陆远程主机，可以考虑使用expect脚本。（脚本参考公司内部）</p>
 <figure class="highlight tcl"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/expect</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span> pin <span class="string">"1234"</span>                                          #改成：堡垒机动态密码固定前缀 </span><br><span class="line"><span class="keyword">set</span> relayhost <span class="string">"yourname@relay.xxx.com"</span>                  #改成：堡垒机host</span><br><span class="line"><span class="keyword">set</span> server [<span class="keyword">lrange</span> <span class="variable">$argv</span> <span class="number">0</span> <span class="number">0</span>]                           #无需更改，从参数<span class="number">1</span>接收目标机user@host</span><br><span class="line"><span class="keyword">set</span> password  [<span class="keyword">lrange</span> <span class="variable">$argv</span> <span class="number">1</span> <span class="number">1</span>]                        #无需更改，从参数<span class="number">2</span>接收目标机登陆密码</span><br><span class="line"></span><br><span class="line"><span class="comment">#登陆堡垒机</span></span><br><span class="line">spawn ssh <span class="variable">$relayhost</span></span><br><span class="line"></span><br><span class="line">expect &#123;</span><br><span class="line"><span class="comment">    #遇到询问密码</span></span><br><span class="line">    <span class="string">"password:"</span> &#123;</span><br><span class="line">        expect_user &#123;</span><br><span class="line">            -re (.*)\n &#123;</span><br><span class="line"><span class="comment">                #发送堡垒机密码前缀+动态密码</span></span><br><span class="line">                send <span class="string">"$pin$expect_out(1,string)\n"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        exp_continue</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="string">"bash*"</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#发送ssh目标机命令到堡垒机</span></span><br><span class="line">send <span class="string">"ssh $server\r"</span></span><br><span class="line">expect <span class="string">"*password:"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#发送ssh密码到堡垒机</span></span><br><span class="line">send <span class="string">"$password\n"</span></span><br><span class="line">interact</span><br></pre></td></tr></table></figure>
 <p>如何使用呢？每一台远程主机，都可以生成一个一键脚本，如下<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="shebang">#!/bin/bash</span><br><span class="line"></span></span><br><span class="line"><span class="comment">#一键ssh root@cp01-001.xxx.com，密码是123456</span></span><br><span class="line">./auto_login root@cp01-<span class="number">001</span>.xxx.com <span class="number">123456</span></span><br></pre></td></tr></table></figure></p>
-<p>#参考<br><a href="http://www.fwolf.com/blog/post/385" target="_blank" rel="external">http://www.fwolf.com/blog/post/385</a><br><a href="http://www.douban.com/note/314079507/" target="_blank" rel="external">http://www.douban.com/note/314079507/</a><br>公司内网</p>
+<h1 id="u53C2_u8003"><a href="#u53C2_u8003" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.fwolf.com/blog/post/385" target="_blank" rel="external">http://www.fwolf.com/blog/post/385</a><br><a href="http://www.douban.com/note/314079507/" target="_blank" rel="external">http://www.douban.com/note/314079507/</a><br>公司内网</p>
 </span>
       
     </div>
@@ -443,7 +443,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ssh_u8FDE_u63A5_u590D_u7528"><span class="nav-number">1.</span> <span class="nav-text">ssh连接复用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u4E00_u952E_u767B_u9646_u811A_u672C"><span class="nav-number">2.</span> <span class="nav-text">一键登陆脚本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u53C2_u8003"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">

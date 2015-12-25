@@ -57,7 +57,7 @@
 <meta property="og:url" content="http://log.codes/post/shell-memo/index.html">
 <meta property="og:site_name" content="log.codes">
 <meta property="og:description" content="相比于图形化界面的Windows或Mac，Linux系统上手成本比较高，因为需要学习牢记一些常用命令。然而一旦熟练之后，效率却能比图形化界面高很多。本文例举一些Linux下不常用容易忘记的命令，以备不时之需。">
-<meta property="og:updated_time" content="2015-10-20T08:09:17.000Z">
+<meta property="og:updated_time" content="2015-12-25T10:37:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="shell命令备忘录">
 <meta name="twitter:description" content="相比于图形化界面的Windows或Mac，Linux系统上手成本比较高，因为需要学习牢记一些常用命令。然而一旦熟练之后，效率却能比图形化界面高很多。本文例举一些Linux下不常用容易忘记的命令，以备不时之需。">
@@ -244,12 +244,12 @@
       
         <span itemprop="articleBody"><p>相比于图形化界面的Windows或Mac，Linux系统上手成本比较高，因为需要学习牢记一些常用命令。然而一旦熟练之后，效率却能比图形化界面高很多。本文例举一些Linux下不常用容易忘记的命令，以备不时之需。</p>
 <a id="more"></a>
-<p>##打包解包<br>打包：<code>tar cvf file.tar file1 file2</code><br>打包同时压缩：<code>tar zcvf file.tar file1 file2</code><br>查包：<code>tar tvf file.tar</code><br>解包：<code>tar xvf file.tar</code><br>解压缩包：<code>tar zxvf file.tar</code>  </p>
+<h2 id="u6253_u5305_u89E3_u5305"><a href="#u6253_u5305_u89E3_u5305" class="headerlink" title="打包解包"></a>打包解包</h2><p>打包：<code>tar cvf file.tar file1 file2</code><br>打包同时压缩：<code>tar zcvf file.tar file1 file2</code><br>查包：<code>tar tvf file.tar</code><br>解包：<code>tar xvf file.tar</code><br>解压缩包：<code>tar zxvf file.tar</code>  </p>
 <p>参数：<code>-c</code>创建新文件，<code>-t</code>查看，<code>-x</code>解包，<code>-v</code>verbosely，<code>-f</code>指定文件，<code>-z</code>gzip压缩。  </p>
-<p>##压缩解压<br>压缩：<code>gzip file</code><br>解压：<code>gzip -d file.gz</code><br>查看压缩信息：<code>gzip -l *.gz</code></p>
-<p>##zssh<br>登陆远程机器：<code>zssh xxx@ip</code><br>上传文件：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#键入ctrl+@  </span></span><br><span class="line">zssh &gt;                <span class="preprocessor">#这里切换到了本地机器  </span></span><br><span class="line">zssh &gt; pwd             <span class="preprocessor">#看一下本地机器的当前目录  </span></span><br><span class="line">zssh &gt; ls              <span class="preprocessor">#看一下有那些文件  </span></span><br><span class="line">zssh &gt; sz <span class="number">123.</span>txt      <span class="preprocessor">#上传本地机器的当前目录的<span class="number">123.</span>txt到远程机器的当前目录</span></span><br><span class="line">zssh &gt; <span class="built_in">exit</span>            <span class="preprocessor">#退出zssh模式</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="u538B_u7F29_u89E3_u538B"><a href="#u538B_u7F29_u89E3_u538B" class="headerlink" title="压缩解压"></a>压缩解压</h2><p>压缩：<code>gzip file</code><br>解压：<code>gzip -d file.gz</code><br>查看压缩信息：<code>gzip -l *.gz</code></p>
+<h2 id="zssh"><a href="#zssh" class="headerlink" title="zssh"></a>zssh</h2><p>登陆远程机器：<code>zssh xxx@ip</code><br>上传文件：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#键入ctrl+@  </span></span><br><span class="line">zssh &gt;                <span class="preprocessor">#这里切换到了本地机器  </span></span><br><span class="line">zssh &gt; pwd             <span class="preprocessor">#看一下本地机器的当前目录  </span></span><br><span class="line">zssh &gt; ls              <span class="preprocessor">#看一下有那些文件  </span></span><br><span class="line">zssh &gt; sz <span class="number">123.</span>txt      <span class="preprocessor">#上传本地机器的当前目录的<span class="number">123.</span>txt到远程机器的当前目录</span></span><br><span class="line">zssh &gt; <span class="built_in">exit</span>            <span class="preprocessor">#退出zssh模式</span></span><br></pre></td></tr></table></figure></p>
 <p>下载文件：<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sz filename          <span class="comment">#在远程机器上，启动sz，准备发送文件  </span></span><br><span class="line">*B00000000000000     <span class="comment">#看到一堆乱码, 然后键入ctrl+@</span></span><br><span class="line">zssh &gt; <span class="built_in">pwd</span>           <span class="comment">#看看在那个目录,cd 切换到合适的目录  </span></span><br><span class="line">zssh &gt; rz 			  <span class="comment">#接住对应的文件</span></span><br></pre></td></tr></table></figure></p>
-<p>##其他<br>显示登陆用户信息：<code>w</code><br>系统版本：<code>lsb_release -a</code><br>文件大小：<code>du -h --max-depth=1</code><br>CPU数量：<code>cat /proc/cpuinfo | grep -c processor</code><br>内存空间：<code>free</code><br>磁盘空间：<code>df -h</code><br>查看目录的大小：<code>du -sh dirname</code><br>查看端口占用：<code>lsof -i:8080</code></p>
+<h2 id="u5176_u4ED6"><a href="#u5176_u4ED6" class="headerlink" title="其他"></a>其他</h2><p>显示登陆用户信息：<code>w</code><br>系统版本：<code>lsb_release -a</code><br>文件大小：<code>du -h --max-depth=1</code><br>CPU数量：<code>cat /proc/cpuinfo | grep -c processor</code><br>内存空间：<code>free</code><br>磁盘空间：<code>df -h</code><br>查看目录的大小：<code>du -sh dirname</code><br>查看端口占用：<code>lsof -i:8080</code></p>
 </span>
       
     </div>
@@ -436,7 +436,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u6253_u5305_u89E3_u5305"><span class="nav-number">1.</span> <span class="nav-text">打包解包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u538B_u7F29_u89E3_u538B"><span class="nav-number">2.</span> <span class="nav-text">压缩解压</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zssh"><span class="nav-number">3.</span> <span class="nav-text">zssh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5176_u4ED6"><span class="nav-number">4.</span> <span class="nav-text">其他</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">

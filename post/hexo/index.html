@@ -64,7 +64,7 @@
 喜欢写文字，记博客
 喜欢markdown语法（不喜欢word或者富文本编辑器复">
 <meta property="og:image" content="http://log.codes/image/hexo.png">
-<meta property="og:updated_time" content="2015-12-11T10:18:48.000Z">
+<meta property="og:updated_time" content="2015-12-25T10:30:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="快速搭建hexo博客">
 <meta name="twitter:description" content="前阵子费了不少功夫终于把wordpress搭建起来，这阵子又接触学习了hexo博客系统，相见恨晚，才知道一个博客可以分分钟搭建起来。hexo介绍见官网http://hexo.io，号称是基于Node.js开发的快速、简单、威猛的博客框架。什么样的人会对hexo感兴趣呢？或者说必须要达到什么条件才有办法使用hexo呢？
@@ -260,7 +260,7 @@
 <li>希望博客自适应移动端</li>
 </ul>
 <a id="more"></a>
-<p>#快速搭建<br>首先你要有台机器（mac/linux/windows都行，首推mac），接着：</p>
+<h1 id="u5FEB_u901F_u642D_u5EFA"><a href="#u5FEB_u901F_u642D_u5EFA" class="headerlink" title="快速搭建"></a>快速搭建</h1><p>首先你要有台机器（mac/linux/windows都行，首推mac），接着：</p>
 <ol>
 <li>安装Node.js[^nodejs]<ul>
 <li>到官网<a href="http://www.nodejs.org/download/" target="_blank" rel="external">http://www.nodejs.org/download/</a>下载安装（不要担心，下载之后一直<code>下一步</code>即可）</li>
@@ -274,7 +274,7 @@
 <li>启动服务：<code>hexo server</code>，会提示博客地址<code>http://localhost:4000/</code>，访问即可。</li>
 </ol>
 <p><img src="/image/hexo.png" alt="hexo首页"><br>怎么样？简单地5步几条命令，没有隐藏的旁支操作，童叟无欺！</p>
-<p>#对比搭建wordpress<br>再回忆下当初在Ubuntu上搭建wordpress的流程：</p>
+<h1 id="u5BF9_u6BD4_u642D_u5EFAwordpress"><a href="#u5BF9_u6BD4_u642D_u5EFAwordpress" class="headerlink" title="对比搭建wordpress"></a>对比搭建wordpress</h1><p>再回忆下当初在Ubuntu上搭建wordpress的流程：</p>
 <ol>
 <li>安装webserver</li>
 <li>安装php</li>
@@ -286,7 +286,7 @@
 <li>启动php-fpm，nginx</li>
 </ol>
 <p>看起来也没几步是把？too naive，每一步的操作远比一条命令复杂，而且还还很容易出错要解决。</p>
-<p>#博客功能<br>hexo跟Node.js一样，是个新生儿，相比wordpress功能没有那么齐全，但博客的基本功能都提供了。麻雀虽小五脏俱全。</p>
+<h1 id="u535A_u5BA2_u529F_u80FD"><a href="#u535A_u5BA2_u529F_u80FD" class="headerlink" title="博客功能"></a>博客功能</h1><p>hexo跟Node.js一样，是个新生儿，相比wordpress功能没有那么齐全，但博客的基本功能都提供了。麻雀虽小五脏俱全。</p>
 <ul>
 <li>写博客</li>
 <li>自定义主题</li>
@@ -296,14 +296,14 @@
 <li>SEO，例如meta、自定义链接</li>
 <li>评论（需要安装插件）</li>
 </ul>
-<p>#写文章<br>hexo并没有使用db存储数据，而是使用markdown的语法文件存储。写文章很简单：</p>
+<h1 id="u5199_u6587_u7AE0"><a href="#u5199_u6587_u7AE0" class="headerlink" title="写文章"></a>写文章</h1><p>hexo并没有使用db存储数据，而是使用markdown的语法文件存储。写文章很简单：</p>
 <ol>
 <li>到根目录，<code>hexo new my-first-blog</code>会在<code>source/_posts</code>目录生成一个markdown文件my-first-blog.md</li>
 <li>刷新博客首页会发现多出了一篇文章《my-first-blog》，点进去是空内容。</li>
 <li>编辑md文件，用markdown语法写文章即可（随时保存，刷新页面就会发现博客已经自动更新了）</li>
 </ol>
 <p>如果不清楚markdown语法，可以自行google之。有时间博主会写一篇markdown的介绍。</p>
-<p>#部署<br>两种方式部署博客：</p>
+<h1 id="u90E8_u7F72"><a href="#u90E8_u7F72" class="headerlink" title="部署"></a>部署</h1><p>两种方式部署博客：</p>
 <ul>
 <li>静态化页面部署，也就是生成静态html页面，随便部署到哪个服务器下都可以访问。<ol>
 <li>执行<code>hexo generate</code>，会在<code>public</code>目录下生成一些静态文件。</li>
@@ -318,7 +318,7 @@
 </li>
 </ul>
 <p>博客内容通常不会变化太频繁，因此建议使用静态化页面部署即可，服务器基本上不需要什么负载。<br>而本地环境可以使用server部署来写博客，写完之后静态化再上传发布。</p>
-<p>##github pages<br>本章节需要你了解点github和git的知识，否则可能比较难以进行。</p>
+<h2 id="github_pages"><a href="#github_pages" class="headerlink" title="github pages"></a>github pages</h2><p>本章节需要你了解点github和git的知识，否则可能比较难以进行。</p>
 <p><a href="https://pages.github.com" target="_blank" rel="external">github pages</a> 提供了放置静态网页文件的功能，通过github来部署文件。因此可以利用github pages来部署博客的目的。现在我们就把刚刚创建的hexo-blog上传到pages上。</p>
 <ol>
 <li>在github中创建一个repo项目，具体教程见<a href="https://pages.github.com" target="_blank" rel="external">https://pages.github.com</a>首页。创建完之后你会有一个类似<a href="https://github.com/NaHCO3/nahco3.github.io" target="_blank" rel="external">https://github.com/NaHCO3/nahco3.github.io</a>的项目页面，里头存储的就是页面文件。</li>
@@ -327,10 +327,9 @@
 </ol>
 <p>3.将<code>hexo generate</code>的<code>public</code>目录上传到pages上。怎么做呢？执行<code>hexo deploy</code>即可。这条命令会将你public下的文件通过git commit push到你的repo上去。执行时会提示你输入github用户名密码。完成之后到你的项目页面下看，就会有一堆文件了。那些就是<code>public</code>目录下的文件，也就是hexo生成的静态文件。</p>
 <p>如果你想使用自己的域名，github pages支持这样做。详见<a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages" target="_blank" rel="external">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages</a>，这里就不展开了。</p>
-<p>#参考资料<br>hexo博客的一些使用方法、配置详见<a href="http://hexo.io/docs/" target="_blank" rel="external">http://hexo.io/docs/</a>，内容不多，而且英语是台湾人写的，通俗易懂。<br>关于hexo搭配github的一些介绍，可以看<a href="http://blog.fens.me/hexo-blog-github/" target="_blank" rel="external">http://blog.fens.me/hexo-blog-github/</a>提供了更详细的教程。</p>
+<h1 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h1><p>hexo博客的一些使用方法、配置详见<a href="http://hexo.io/docs/" target="_blank" rel="external">http://hexo.io/docs/</a>，内容不多，而且英语是台湾人写的，通俗易懂。<br>关于hexo搭配github的一些介绍，可以看<a href="http://blog.fens.me/hexo-blog-github/" target="_blank" rel="external">http://blog.fens.me/hexo-blog-github/</a>提供了更详细的教程。</p>
 <p>[^nodejs]: Node.js是建立在chromeV8引擎（JavaScript运行环境）的平台，用于快速简单搭建可扩展网络应用。 Node.js使用了事件驱动、非阻塞IO模型，使之轻量且高效。对于运行在分布式设备上的数据密集型实时应用更是完美。（以上介绍是从官网人肉翻译下来的）</p>
-<p>#快速命令</p>
-<pre><code>hexo init /server/hexo-blog  #创建博客
+<h1 id="u5FEB_u901F_u547D_u4EE4"><a href="#u5FEB_u901F_u547D_u4EE4" class="headerlink" title="快速命令"></a>快速命令</h1><pre><code>hexo init /server/hexo-blog  #创建博客
 hexo new draft &lt;title&gt;       #创建新草稿
 hexo publish [layout] &lt;filename&gt; #发布草稿（相当于new draft + publish相当于 hexo new）
 hexo new &lt;title&gt;             #创建新文章
@@ -524,7 +523,7 @@ hexo generate --deploy       #生成静态文件并且部署
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#u5FEB_u901F_u642D_u5EFA"><span class="nav-number">1.</span> <span class="nav-text">快速搭建</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u5BF9_u6BD4_u642D_u5EFAwordpress"><span class="nav-number">2.</span> <span class="nav-text">对比搭建wordpress</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u535A_u5BA2_u529F_u80FD"><span class="nav-number">3.</span> <span class="nav-text">博客功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u5199_u6587_u7AE0"><span class="nav-number">4.</span> <span class="nav-text">写文章</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u90E8_u7F72"><span class="nav-number">5.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#github_pages"><span class="nav-number">5.1.</span> <span class="nav-text">github pages</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u5FEB_u901F_u547D_u4EE4"><span class="nav-number">7.</span> <span class="nav-text">快速命令</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">

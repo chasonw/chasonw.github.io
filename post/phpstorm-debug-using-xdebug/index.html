@@ -65,7 +65,7 @@
 <meta property="og:image" content="http://log.codes/image/web-application-debug1.png">
 <meta property="og:image" content="http://log.codes/image/web-application-debug2.png">
 <meta property="og:image" content="http://log.codes/image/auto-debug.png">
-<meta property="og:updated_time" content="2015-10-20T08:09:17.000Z">
+<meta property="og:updated_time" content="2015-12-25T10:36:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PhpStorm使用Xdebug断点调试">
 <meta name="twitter:description" content="断点调试作为调试手段一直备受推崇，因为它使用简单方便（尽管配置不简单），能让用户直观体验程序运行的每一个过程状态。本文介绍如何在PhpStorm上使用Xdebug配置使用断点调试。">
@@ -252,23 +252,23 @@
       
         <span itemprop="articleBody"><p>断点调试作为调试手段一直备受推崇，因为它使用简单方便（尽管配置不简单），能让用户直观体验程序运行的每一个过程状态。<br>本文介绍如何在PhpStorm上使用Xdebug配置使用断点调试。</p>
 <a id="more"></a>
-<p>#前提<br>首先得要有php运行环境，Mac上可使用<a href="https://github.com/Homebrew/homebrew-php" target="_blank" rel="external">homebrew一键安装</a>。<br>其次得安装Xdebug扩展，同样使用Homebrew<br><figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line"><span class="keyword">brew </span>install php55-xdebug</span><br></pre></td></tr></table></figure></p>
+<h1 id="u524D_u63D0"><a href="#u524D_u63D0" class="headerlink" title="前提"></a>前提</h1><p>首先得要有php运行环境，Mac上可使用<a href="https://github.com/Homebrew/homebrew-php" target="_blank" rel="external">homebrew一键安装</a>。<br>其次得安装Xdebug扩展，同样使用Homebrew<br><figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line"><span class="keyword">brew </span>install php55-xdebug</span><br></pre></td></tr></table></figure></p>
 <p>验证是否Xdebug扩展是否已安装，可以使用<code>php -i | grep xdebug</code>命令。<br>也可以创建一个web页面<code>&lt;?php phpinfo(); ?&gt;</code>验证是否存在xdebug项。</p>
 <p>最后还得安装个PhpStorm，<a href="https://www.jetbrains.com/phpstorm" target="_blank" rel="external">下载地址</a>。</p>
-<p>#配置php.ini<br>不知道php.ini路径的话，可通过<code>phpinfo()</code>页面中的<code>Loaded Configuration File</code>项找到。<br>在xdebug配置项下新加idekey等配置项：</p>
+<h1 id="u914D_u7F6Ephp-ini"><a href="#u914D_u7F6Ephp-ini" class="headerlink" title="配置php.ini"></a>配置php.ini</h1><p>不知道php.ini路径的话，可通过<code>phpinfo()</code>页面中的<code>Loaded Configuration File</code>项找到。<br>在xdebug配置项下新加idekey等配置项：</p>
 <figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">[xdebug]</span><br><span class="line">zend_extension=<span class="string">"/usr/local/opt/php55-xdebug/xdebug.so"</span></span><br><span class="line">xdebug.idekey=PHPSTORM</span><br><span class="line">xdebug<span class="class">.remote_enable</span> = On</span><br><span class="line">xdebug.remote_host=localhost</span><br><span class="line">xdebug.remote_port=<span class="number">9099</span></span><br><span class="line">xdebug.remote_handler=dbgp</span><br></pre></td></tr></table></figure>
 <p>断点调试原理是，php运行时将调试信息发往IDE开启的调试端口，IDE捕获到调试信息做调试信息的展示交互。<br>几个配置项的含义是：<br>idekey：自己定义，需要与IDE里头配置一样。<br>remote_enable：远程调试是否开启。<br>remote_host：调试器所在的主机，支持本机调试，也支持远程主机调试（例如远程运行php服务将调试信息发到本地IDE）<br>remote_port：调试器启动的端口。<br>remote_hanler：运行服务器与调试器的交互协议，默认为DBGP（A common debugger protocol for languages and debugger UI communication）即可。</p>
 <p>配置完之后重启下php-fpm，重新查看<code>phpinfo()</code>页面中的Xdebug配置是否已生效。<br><img src="/image/phpinfo-xdebug.png" alt="xdebug配置生效"></p>
-<p>#配置PhpStorm<br>打开PhpStorm的Setting（Mac下是Preference）。</p>
-<p>##调试端口<br>可搜Debug快速定位到配置页。<br>在<code>Debug Port</code>里配置一个端口号，可自定义，需保证未被其他进程占用，9000通常被php-fpm占用。<br>前一步的xdebug.remote_port应该与这里开启的端口保持一致，否则xdebug与调试器无法通信。<br><img src="/image/phpstorm-xdebug-port.png" alt="调试器端口配置"></p>
-<p>##DBGp Proxy<br>如题的配置，配置下IDE key，与前面的xdebug.idekey保持一致。<br>Host和Port填写xdebug.remote_host和xdebug.remote_port（貌似随便填写也不影响，暂不知这个作何用）<br><img src="/image/phpstorm-dbgp-proxy.png" alt="DBGp Proxy配置"></p>
-<p>#进入调试模式<br>断点调试分3种模式：脚本调试、web application运行调试、浏览器访问自动触发调试。</p>
-<p>##脚本调试<br>本模式下允许本地脚本运行时断点调试调试，步骤见下图。<br><img src="/image/script-debug1.png" alt="选中项目中的某个脚本，右键执行Debug &#39;xxxx.php&#39;即可进入调试模式"></p>
+<h1 id="u914D_u7F6EPhpStorm"><a href="#u914D_u7F6EPhpStorm" class="headerlink" title="配置PhpStorm"></a>配置PhpStorm</h1><p>打开PhpStorm的Setting（Mac下是Preference）。</p>
+<h2 id="u8C03_u8BD5_u7AEF_u53E3"><a href="#u8C03_u8BD5_u7AEF_u53E3" class="headerlink" title="调试端口"></a>调试端口</h2><p>可搜Debug快速定位到配置页。<br>在<code>Debug Port</code>里配置一个端口号，可自定义，需保证未被其他进程占用，9000通常被php-fpm占用。<br>前一步的xdebug.remote_port应该与这里开启的端口保持一致，否则xdebug与调试器无法通信。<br><img src="/image/phpstorm-xdebug-port.png" alt="调试器端口配置"></p>
+<h2 id="DBGp_Proxy"><a href="#DBGp_Proxy" class="headerlink" title="DBGp Proxy"></a>DBGp Proxy</h2><p>如题的配置，配置下IDE key，与前面的xdebug.idekey保持一致。<br>Host和Port填写xdebug.remote_host和xdebug.remote_port（貌似随便填写也不影响，暂不知这个作何用）<br><img src="/image/phpstorm-dbgp-proxy.png" alt="DBGp Proxy配置"></p>
+<h1 id="u8FDB_u5165_u8C03_u8BD5_u6A21_u5F0F"><a href="#u8FDB_u5165_u8C03_u8BD5_u6A21_u5F0F" class="headerlink" title="进入调试模式"></a>进入调试模式</h1><p>断点调试分3种模式：脚本调试、web application运行调试、浏览器访问自动触发调试。</p>
+<h2 id="u811A_u672C_u8C03_u8BD5"><a href="#u811A_u672C_u8C03_u8BD5" class="headerlink" title="脚本调试"></a>脚本调试</h2><p>本模式下允许本地脚本运行时断点调试调试，步骤见下图。<br><img src="/image/script-debug1.png" alt="选中项目中的某个脚本，右键执行Debug &#39;xxxx.php&#39;即可进入调试模式"></p>
 <p>进入调试模式后的界面如下：<br><img src="/image/script-debug2.png" alt="调试模式下可以从设置的断点开始一行行代码执行（断点调试的功能这里不细表）"></p>
-<p>##web application运行调试<br>本模式允许指定url访问web页面进行php代码调试，步骤如下图：<br><img src="/image/web-application-debug1.png" alt="web application调试步骤"></p>
+<h2 id="web_application_u8FD0_u884C_u8C03_u8BD5"><a href="#web_application_u8FD0_u884C_u8C03_u8BD5" class="headerlink" title="web application运行调试"></a>web application运行调试</h2><p>本模式允许指定url访问web页面进行php代码调试，步骤如下图：<br><img src="/image/web-application-debug1.png" alt="web application调试步骤"></p>
 <p>其中第1步的弹窗配置如下：<br><img src="/image/web-application-debug2.png" alt="配置web application弹窗"></p>
 <p>开启debug模式后IDE会触发浏览器访问配置的url，并且IDE开启调试器（与脚本调试模式一致）。<br>可以断点一步步调试，待调试结束后，浏览器正常输出结果。</p>
-<p>##浏览器访问自动触发调试<br>该模式下，浏览器下访问某个页面url，自动触发IDE进入调试模式。<br>需安装Chrome扩展：Xdebug helper，该插件会自动在http请求里头携带XDEBUG调试参数。</p>
+<h2 id="u6D4F_u89C8_u5668_u8BBF_u95EE_u81EA_u52A8_u89E6_u53D1_u8C03_u8BD5"><a href="#u6D4F_u89C8_u5668_u8BBF_u95EE_u81EA_u52A8_u89E6_u53D1_u8C03_u8BD5" class="headerlink" title="浏览器访问自动触发调试"></a>浏览器访问自动触发调试</h2><p>该模式下，浏览器下访问某个页面url，自动触发IDE进入调试模式。<br>需安装Chrome扩展：Xdebug helper，该插件会自动在http请求里头携带XDEBUG调试参数。</p>
 <p>步骤如下<br>1.Xdebug helper扩展开启debug模式<br>2.PhpStorm开启监听连接<br>3.代码里头设置断点<br>4.浏览器访问页面url，即可触发IDE进入调试模式</p>
 <p><img src="/image/auto-debug.png" alt="浏览器开启debug模式和IDE监听连接"></p>
 <p>至此，断点调试遍可以随时用起来了，enjoy it！</p>
@@ -452,7 +452,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#u524D_u63D0"><span class="nav-number">1.</span> <span class="nav-text">前提</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u914D_u7F6Ephp-ini"><span class="nav-number">2.</span> <span class="nav-text">配置php.ini</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u914D_u7F6EPhpStorm"><span class="nav-number">3.</span> <span class="nav-text">配置PhpStorm</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u8C03_u8BD5_u7AEF_u53E3"><span class="nav-number">3.1.</span> <span class="nav-text">调试端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DBGp_Proxy"><span class="nav-number">3.2.</span> <span class="nav-text">DBGp Proxy</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u8FDB_u5165_u8C03_u8BD5_u6A21_u5F0F"><span class="nav-number">4.</span> <span class="nav-text">进入调试模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u811A_u672C_u8C03_u8BD5"><span class="nav-number">4.1.</span> <span class="nav-text">脚本调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web_application_u8FD0_u884C_u8C03_u8BD5"><span class="nav-number">4.2.</span> <span class="nav-text">web application运行调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6D4F_u89C8_u5668_u8BBF_u95EE_u81EA_u52A8_u89E6_u53D1_u8C03_u8BD5"><span class="nav-number">4.3.</span> <span class="nav-text">浏览器访问自动触发调试</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">

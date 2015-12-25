@@ -58,7 +58,7 @@
 <meta property="og:site_name" content="log.codes">
 <meta property="og:description" content="linux环境下开发有时需要请求http接口进行调试，而在命令行下cURL是一款请求http的利器。实际上，cURL并不单纯为http而生，从官网http://curl.haxx.se的介绍可以知道：curl是一款使用URL语法传输数据的命令行工具，支持FTP, FTPS, Gopher, HTTP, HTTPS等等协议，支持SSL认证。HTTP协议支持POST、PUT、cookie等等。而web">
 <meta property="og:image" content="http://log.codes/image/timeline.png">
-<meta property="og:updated_time" content="2015-10-20T08:09:17.000Z">
+<meta property="og:updated_time" content="2015-12-25T10:30:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="cURL命令">
 <meta name="twitter:description" content="linux环境下开发有时需要请求http接口进行调试，而在命令行下cURL是一款请求http的利器。实际上，cURL并不单纯为http而生，从官网http://curl.haxx.se的介绍可以知道：curl是一款使用URL语法传输数据的命令行工具，支持FTP, FTPS, Gopher, HTTP, HTTPS等等协议，支持SSL认证。HTTP协议支持POST、PUT、cookie等等。而web">
@@ -260,7 +260,7 @@
       
         <span itemprop="articleBody"><p>linux环境下开发有时需要请求http接口进行调试，而在命令行下cURL是一款请求http的利器。<br>实际上，cURL并不单纯为http而生，从官网<a href="http://curl.haxx.se" target="_blank" rel="external">http://curl.haxx.se</a>的介绍可以知道：curl是一款使用URL语法传输数据的命令行工具，支持FTP, FTPS, Gopher, HTTP, HTTPS等等协议，支持SSL认证。HTTP协议支持POST、PUT、cookie等等。而web开发者通常使用的只有HTTP。</p>
 <a id="more"></a>
-<p>#常用命令<br>下面是一些常用命令（也可通过<code>curl --help</code>查看）：</p>
+<h1 id="u5E38_u7528_u547D_u4EE4"><a href="#u5E38_u7528_u547D_u4EE4" class="headerlink" title="常用命令"></a>常用命令</h1><p>下面是一些常用命令（也可通过<code>curl --help</code>查看）：</p>
 <ul>
 <li><p>请求http，获取源码，默认<code>GET</code>方式</p>
 <figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">curl www<span class="class">.sina</span><span class="class">.com</span></span><br></pre></td></tr></table></figure>
@@ -284,10 +284,9 @@
 <figure class="highlight haml"><table><tr><td class="code"><pre><span class="line">curl http://www.sina.com </span><br><span class="line">-<span class="ruby">-referer <span class="symbol">http:</span>/<span class="regexp">/www.example.com </span><br><span class="line"></span></span>-<span class="ruby"><span class="regexp">-user-agent "iPhone 8" </span><br><span class="line"></span></span>-<span class="ruby"><span class="regexp">-cookie "name=xxx" </span><br><span class="line"></span></span>-<span class="ruby"><span class="regexp">v</span></span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>#度量响应时间</p>
-<p>##示例<br>有时候我们需要度量一次http请求的各个环节时间，这就得用到<code>-w</code>参数（表示<code>What to output after completion</code>）。例如：<br><figure class="highlight perl"><table><tr><td class="code"><pre><span class="line">curl </span><br><span class="line">-o /dev/null           <span class="comment">#不输出请求结果</span></span><br><span class="line">-<span class="keyword">s</span>                     <span class="comment">#Silent mode. Don't output anything</span></span><br><span class="line">-w <span class="string">"time_namelookup:<span class="variable">%&#123;time_namelookup&#125;</span>s\ntime_pretransfer:<span class="variable">%&#123;time_pretransfer&#125;</span>s\ntime_connect:<span class="variable">%&#123;time_connect&#125;</span>s\ntime_starttransfer:<span class="variable">%&#123;time_starttransfer&#125;</span>s\ntime_total:<span class="variable">%&#123;time_total&#125;</span>s\n"</span></span><br><span class="line">http:<span class="regexp">//log</span>.codes       <span class="comment">#url</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="u5EA6_u91CF_u54CD_u5E94_u65F6_u95F4"><a href="#u5EA6_u91CF_u54CD_u5E94_u65F6_u95F4" class="headerlink" title="度量响应时间"></a>度量响应时间</h1><h2 id="u793A_u4F8B"><a href="#u793A_u4F8B" class="headerlink" title="示例"></a>示例</h2><p>有时候我们需要度量一次http请求的各个环节时间，这就得用到<code>-w</code>参数（表示<code>What to output after completion</code>）。例如：<br><figure class="highlight perl"><table><tr><td class="code"><pre><span class="line">curl </span><br><span class="line">-o /dev/null           <span class="comment">#不输出请求结果</span></span><br><span class="line">-<span class="keyword">s</span>                     <span class="comment">#Silent mode. Don't output anything</span></span><br><span class="line">-w <span class="string">"time_namelookup:<span class="variable">%&#123;time_namelookup&#125;</span>s\ntime_pretransfer:<span class="variable">%&#123;time_pretransfer&#125;</span>s\ntime_connect:<span class="variable">%&#123;time_connect&#125;</span>s\ntime_starttransfer:<span class="variable">%&#123;time_starttransfer&#125;</span>s\ntime_total:<span class="variable">%&#123;time_total&#125;</span>s\n"</span></span><br><span class="line">http:<span class="regexp">//log</span>.codes       <span class="comment">#url</span></span><br></pre></td></tr></table></figure></p>
 <p><code>-w</code>之后跟着FORMAT格式，FORMAT是一个字符串，可以包含文字和以%开头的变量。这条命令执行之后输出：<br><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="tag">time_namelookup</span><span class="pseudo">:0</span><span class="class">.005s</span></span><br><span class="line"><span class="tag">time_pretransfer</span><span class="pseudo">:0</span><span class="class">.185s</span></span><br><span class="line"><span class="tag">time_connect</span><span class="pseudo">:0</span><span class="class">.185s</span></span><br><span class="line"><span class="tag">time_starttransfer</span><span class="pseudo">:0</span><span class="class">.242s</span></span><br><span class="line"><span class="tag">time_total</span><span class="pseudo">:0</span><span class="class">.243s</span></span><br></pre></td></tr></table></figure></p>
-<p>##变量<br>FORMAT中的<code>%{variable_name}</code>均为变量，有以下几种跟时间相关的变量（均以<code>秒</code>为单位）：</p>
+<h2 id="u53D8_u91CF"><a href="#u53D8_u91CF" class="headerlink" title="变量"></a>变量</h2><p>FORMAT中的<code>%{variable_name}</code>均为变量，有以下几种跟时间相关的变量（均以<code>秒</code>为单位）：</p>
 <ul>
 <li>time_namelookup : 从一开始到<code>域名解析完成时</code>所耗时间</li>
 <li>time_connect : 从一开始到<code>TCP连接远程主机完成时</code>所耗时间</li>
@@ -295,14 +294,13 @@
 <li>time_starttransfer : 从一开始到<code>第一字节准备开始传输</code>，包括<code>time_pretransfer</code>和服务器计算时间</li>
 <li>time_total : 从一开始到请求结束时间</li>
 </ul>
-<p>##timeline<br>各个变量对比chrome的Network Timeline如下：<br><img src="/image/timeline.png" alt="timeline对比"></p>
+<h2 id="timeline"><a href="#timeline" class="headerlink" title="timeline"></a>timeline</h2><p>各个变量对比chrome的Network Timeline如下：<br><img src="/image/timeline.png" alt="timeline对比"></p>
 <p>因此可以得出一些结论：</p>
 <ul>
 <li>waiting = time_starttransfer - time_connect（发出请求之后，Web 服务器处理请求并开始发回数据所用的时间）</li>
 <li>receiving = time_total - time_starttransfer （客户机从服务器下载数据所用的时间）</li>
 </ul>
-<p>#参考资料</p>
-<ul>
+<h1 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
 <li><a href="http://httpkit.com/resources/HTTP-from-the-Command-Line/#set-the-request-method" target="_blank" rel="external">http://httpkit.com/resources/HTTP-from-the-Command-Line/#set-the-request-method</a></li>
 <li><a href="http://www.ruanyifeng.com/blog/2011/09/curl.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2011/09/curl.html</a></li>
 <li><a href="http://curl.haxx.se/docs/manpage.html" target="_blank" rel="external">http://curl.haxx.se/docs/manpage.html</a></li>
@@ -496,7 +494,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#u5E38_u7528_u547D_u4EE4"><span class="nav-number">1.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u5EA6_u91CF_u54CD_u5E94_u65F6_u95F4"><span class="nav-number">2.</span> <span class="nav-text">度量响应时间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u793A_u4F8B"><span class="nav-number">2.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53D8_u91CF"><span class="nav-number">2.2.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#timeline"><span class="nav-number">2.3.</span> <span class="nav-text">timeline</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
